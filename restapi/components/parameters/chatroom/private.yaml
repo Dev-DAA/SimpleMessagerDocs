@@ -1,0 +1,6 @@
+name: private
+in: query
+description: Признак частной (закрытой) чат-комнаты
+required: false
+schema:
+  type: boolean

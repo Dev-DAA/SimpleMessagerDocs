@@ -1,0 +1,5 @@
+description: Запрос слишком большой
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/Error.yaml"

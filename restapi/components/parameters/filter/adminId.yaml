@@ -1,0 +1,8 @@
+name: adminId
+in: query
+description: Фильтр по полю `adminId`
+required: false
+schema:
+  type: number
+  format: int32
+  minimum: 1

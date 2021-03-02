@@ -1,0 +1,8 @@
+name: userId
+in: query
+description: Фильтр по полю `userId`
+required: false
+schema:
+  type: number
+  format: int32
+  minimum: 1

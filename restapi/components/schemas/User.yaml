@@ -1,0 +1,21 @@
+type: object
+required:
+  - id
+  - username
+  - surname
+  - name
+properties:
+  id:
+    type: number
+    format: int32
+    minimum: 1
+    description: Уникальный ID пользователя
+  username:
+    type: string
+    description: Псевдоним
+  surname:
+    type: string
+    description: Фамилия
+  name:
+    type: string
+    description: Имя

@@ -1,0 +1,6 @@
+name: username
+in: query
+description: Псевдоним
+required: true
+schema:
+  type: string

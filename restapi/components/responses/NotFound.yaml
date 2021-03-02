@@ -1,0 +1,5 @@
+description: Не найдено записей, удовлетворяющих запросу
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/Error.yaml"

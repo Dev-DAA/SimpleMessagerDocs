@@ -1,0 +1,6 @@
+name: username
+in: query
+description: Фильтр по полю `username`
+required: false
+schema:
+  type: string

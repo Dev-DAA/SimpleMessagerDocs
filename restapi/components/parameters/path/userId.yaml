@@ -1,0 +1,8 @@
+name: userId
+in: path
+description: Идентификатор пользователя
+required: true
+schema:
+  type: number
+  format: int32
+  minimum: 1

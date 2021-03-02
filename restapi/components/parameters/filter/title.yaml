@@ -1,0 +1,6 @@
+name: title
+in: query
+description: Фильтр по полю `title`
+required: false
+schema:
+  type: string

@@ -1,0 +1,5 @@
+description: Доступ запрещён. Указан недействительный токен
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/Error.yaml"

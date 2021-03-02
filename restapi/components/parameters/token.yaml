@@ -1,0 +1,6 @@
+name: token
+in: query
+description: Уникальный идентификатор сессии
+required: true
+schema:
+  type: string

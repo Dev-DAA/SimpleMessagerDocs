@@ -1,0 +1,5 @@
+description: Некорректное значение поля `type`
+content:
+  application/json:
+    schema:
+      $ref: "../schemas/Error.yaml"

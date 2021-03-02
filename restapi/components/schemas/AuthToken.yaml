@@ -1,0 +1,12 @@
+type: object
+required:
+  - token
+  - expires
+properties:
+  token:
+    type: string
+    description: Уникальный идентификатор сессии
+  expires:
+    type: integer
+    format: int64
+    description: Время действия токена
