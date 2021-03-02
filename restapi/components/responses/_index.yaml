@@ -1,0 +1,14 @@
+TokenNotSpecified:
+  $ref: "./TokenNotSpecified.yaml"
+InvalidTokenSpecified:
+  $ref: "./InvalidTokenSpecified.yaml"
+Forbidden:
+  $ref: "./Forbidden.yaml"
+RequiredParameterNotSpecified:
+  $ref: "./RequiredParameterNotSpecified.yaml"
+NotFound:
+  $ref: "./NotFound.yaml"
+TooLarge:
+  $ref: "./TooLarge.yaml"
+UnsupportedMediaType:
+  $ref: "./UnsupportedMediaType.yaml"
