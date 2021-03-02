@@ -1,0 +1,43 @@
+type: object
+required:
+  - id
+  - roomId
+  - userId
+  - type
+  - content
+  - timestamp
+  - deleted
+properties:
+  id:
+    type: number
+    format: int32
+    minimum: 1
+    description: Уникальный ID сообщения
+  roomId:
+    type: number
+    format: int32
+    minimum: 1
+    description: ID чат-комнаты
+  userId:
+    type: number
+    format: int32
+    minimum: 1
+    description: ID пользователя (автора)
+  type:
+    type: number
+    format: int32
+    minimum: 1
+    maximum: 5
+    description: Тип сообщения
+  content:
+    type: string
+    description: Текст, ссылка или Base64-кодированное содержимое
+  timestamp:
+    type: number
+    format: int32
+    minimum: 1
+    description: Метка времени
+  deleted:
+    type: boolean
+    default: false
+    description: Признак удалённого сообщения

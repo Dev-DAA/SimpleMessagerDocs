@@ -1,0 +1,23 @@
+type: object
+required:
+  - id
+  - title
+  - private
+  - adminId
+properties:
+  id:
+    type: number
+    format: int32
+    minimum: 1
+    description: Уникальный ID чат-комнаты
+  title:
+    type: string
+    description: Название чат-комнаты
+  private:
+    type: boolean
+    description: Признак частной (закрытой) чат-комнаты
+  adminId:
+    type: number
+    format: int32
+    minimum: 1
+    description: ID пользователя (администратора) чат-комнаты

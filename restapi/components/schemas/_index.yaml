@@ -1,0 +1,14 @@
+AuthToken:
+  $ref: "./AuthToken.yaml"
+Error:
+  $ref: "./Error.yaml"
+User:
+  $ref: "./User.yaml"
+Chatroom:
+  $ref: "./Chatroom.yaml"
+Invite:
+  $ref: "./Invite.yaml"
+Message:
+  $ref: "./Message.yaml"
+NewMessage:
+  $ref: "./NewMessage.yaml"

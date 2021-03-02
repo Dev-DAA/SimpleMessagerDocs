@@ -1,0 +1,27 @@
+type: object
+required:
+  - id
+  - roomId
+  - fromId
+  - toId
+properties:
+  id:
+    type: number
+    format: int32
+    minimum: 1
+    description: Уникальный ID пришлашения
+  roomId:
+    type: number
+    format: int32
+    minimum: 1
+    description: Уникальный ID чат-комнаты
+  fromId:
+    type: number
+    format: int32
+    minimum: 1
+    description: ID пользователя, который отправляет приглашение
+  toId:
+    type: number
+    format: int32
+    minimum: 1
+    description: ID пользователя, которому отправлют приглашение
