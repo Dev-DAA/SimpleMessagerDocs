@@ -1,0 +1,6 @@
+name: title
+in: query
+description: Название чат-комнаты
+required: false
+schema:
+  type: string

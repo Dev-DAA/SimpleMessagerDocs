@@ -1,0 +1,61 @@
+token:
+  $ref: "./token.yaml"
+
+count_per_page:
+  $ref: "./pagination/count_per_page.yaml"
+page_number:
+  $ref: "./pagination/page_number.yaml"
+
+username:
+  $ref: "./user/username.yaml"
+password:
+  $ref: "./user/password.yaml"
+surname:
+  $ref: "./user/surname.yaml"
+name:
+  $ref: "./user/name.yaml"
+
+username_required:
+  $ref: "./user/username_required.yaml"
+surname_required:
+  $ref: "./user/surname_required.yaml"
+name_required:
+  $ref: "./user/name_required.yaml"
+
+title:
+  $ref: "./chatroom/title.yaml"
+private:
+  $ref: "./chatroom/private.yaml"
+adminId:
+  $ref: "./chatroom/adminId.yaml"
+
+type:
+  $ref: "./message/type.yaml"
+content:
+  $ref: "./message/content.yaml"
+
+filter_userId:
+  $ref: "./filter/userId.yaml"
+filter_username:
+  $ref: "./filter/username.yaml"
+filter_surname:
+  $ref: "./filter/surname.yaml"
+filter_name:
+  $ref: "./filter/name.yaml"
+
+filter_title:
+  $ref: "./filter/title.yaml"
+filter_private:
+  $ref: "./filter/private.yaml"
+filter_adminId:
+  $ref: "./filter/adminId.yaml"
+
+filter_type:
+  $ref: "./filter/type.yaml"
+
+userId:
+  $ref: "./path/userId.yaml"
+roomId:
+  $ref: "./path/roomId.yaml"
+messageId:
+  $ref: "./path/messageId.yaml"

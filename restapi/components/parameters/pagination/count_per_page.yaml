@@ -1,0 +1,10 @@
+name: count
+in: query
+description: Количество записей (не более 50)
+required: false
+schema:
+  type: number
+  format: int32
+  minimum: 1
+  maximum: 50
+  default: 10

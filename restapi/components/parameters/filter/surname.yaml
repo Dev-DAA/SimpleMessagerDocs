@@ -1,0 +1,6 @@
+name: surname
+in: query
+description: Фильтр по полю `surname`
+required: false
+schema:
+  type: string

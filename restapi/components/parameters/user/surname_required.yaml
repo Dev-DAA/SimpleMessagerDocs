@@ -1,0 +1,6 @@
+name: surname
+in: query
+description: Фамилия
+required: true
+schema:
+  type: string

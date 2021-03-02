@@ -1,0 +1,8 @@
+name: type
+in: query
+description: Тип сообщения
+required: false
+schema:
+  type: number
+  format: int32
+  minimum: 1

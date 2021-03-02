@@ -1,0 +1,6 @@
+name: content
+in: query
+description: Текст, ссылка или Base64-кодированное содержимое
+required: false
+schema:
+  type: string

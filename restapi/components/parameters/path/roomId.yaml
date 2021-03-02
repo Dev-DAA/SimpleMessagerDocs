@@ -1,0 +1,8 @@
+name: roomId
+in: path
+description: Идентификатор чат-комнаты
+required: true
+schema:
+  type: number
+  format: int32
+  minimum: 1

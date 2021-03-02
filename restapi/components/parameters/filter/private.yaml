@@ -1,0 +1,6 @@
+name: private
+in: query
+description: Фильтр по полю `private`
+required: false
+schema:
+  type: boolean

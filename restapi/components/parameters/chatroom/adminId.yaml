@@ -1,0 +1,8 @@
+name: adminId
+in: query
+description: ID пользователя (администратора) чат-комнаты
+required: false
+schema:
+  type: number
+  format: int32
+  minimum: 1
