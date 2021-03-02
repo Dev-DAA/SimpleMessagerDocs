@@ -1,5 +1,5 @@
 # Регистрация аккаунта
-> GET /v1/account/singup
+> POST /v1/account/singup
 
 ## Запрос
 
