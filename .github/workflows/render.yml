@@ -1,0 +1,106 @@
+name: OpenAPI render
+
+on:
+  push:
+    branches: [ openapi ]
+  pull_request:
+    branches: [ openapi ]
+
+  workflow_dispatch:
+
+env:
+  openapi_dir: ./restapi/
+  bundle: ./restapi/openapi_full.yaml
+  render_dir: ./swagger-ui/
+  artifact-bundle: openapi-bundle
+  artifact-render: openapi-render
+  release: openapi-html.zip
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Create OpenAPI bundle (combine multiple files)
+        uses: mpetrunic/swagger-cli-action@v1.0.0
+        with:
+          command: "bundle --outfile ${{ env.bundle }} --type yaml ./restapi/openapi.yaml"
+
+      - name: Upload OpenAPI bundle artifact
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          name: ${{ env.artifact-bundle }}
+          path: ${{ env.bundle }}
+          if-no-files-found: error
+
+  validate:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download OpenAPI bundle artifact
+        uses: actions/download-artifact@v2.0.8
+        with:
+          name: ${{ env.artifact-bundle }}
+          path: ${{ env.openapi_dir }}
+
+      - name: Validate OpenAPI bundle
+        uses: mbowman100/swagger-validator-action@2.0
+        with:
+          files: ${{ env.bundle }}
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download OpenAPI bundle artifact
+        uses: actions/download-artifact@v2.0.8
+        with:
+          name: ${{ env.artifact-bundle }}
+          path: ${{ env.openapi_dir }}
+
+      - name: Generate Swagger UI
+        uses: pjoc-team/swagger-ui-action@v0.0.2
+        with:
+          pattern: ${{ env.bundle }}
+
+      - name: Upload OpenAPI render artifact
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          name: ${{ env.artifact-render }}
+          path: ${{ env.render_dir }}
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download OpenAPI bundle artifact
+        uses: actions/download-artifact@v2.0.8
+        with:
+          name: ${{ env.artifact-render }}
+          path: ${{ env.render_dir }}
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          directory: ${{ env.render_dir }}
+          filename: ${{ env.release }}
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "OpenAPI rendered manual"
+          files: ${{ env.render_dir }}/${{ env.release }}
