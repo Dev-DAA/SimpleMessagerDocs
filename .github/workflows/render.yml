@@ -14,7 +14,6 @@ env:
   render_dir: ./swagger-ui/
   artifact-bundle: openapi-bundle
   artifact-render: openapi-render
-  release: openapi-html.zip
 
 jobs:
   setup:
@@ -54,7 +53,7 @@ jobs:
           files: ${{ env.bundle }}
 
   build:
-    needs: validate
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -79,7 +78,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    needs: build
+    needs: [ validate, build ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -91,16 +90,9 @@ jobs:
           name: ${{ env.artifact-render }}
           path: ${{ env.render_dir }}
 
-      - name: Archive Release
-        uses: thedoctor0/zip-release@master
+      - name: Deploy to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v2
         with:
-          directory: ${{ env.render_dir }}
-          filename: ${{ env.release }}
-
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: false
-          title: "OpenAPI rendered manual"
-          files: ${{ env.render_dir }}/${{ env.release }}
+          build_dir: ${{ env.render_dir }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
