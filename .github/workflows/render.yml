@@ -66,9 +66,10 @@ jobs:
           path: ${{ env.openapi_dir }}
 
       - name: Generate Swagger UI
-        uses: pjoc-team/swagger-ui-action@v0.0.2
+        uses: Legion2/swagger-ui-action@v1
         with:
-          pattern: ${{ env.bundle }}
+          output: ${{ env.render_dir }}
+          spec-file: ${{ env.bundle }}
 
       - name: Upload OpenAPI render artifact
         uses: actions/upload-artifact@v2.2.2
