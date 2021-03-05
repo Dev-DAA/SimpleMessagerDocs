@@ -1,0 +1,868 @@
+openapi: 3.0.2
+info:
+  title: SimpleMessager REST API
+  version: '1.0'
+servers:
+  - url: 'https://localhost/v1'
+tags:
+  - name: account
+    description: Учётная запись
+  - name: user
+    description: Пользователи
+  - name: chatroom
+    description: Чат-комнаты
+  - name: message
+    description: Сообщения
+paths:
+  /account/singin:
+    post:
+      tags:
+        - account
+      summary: Вход в аккаунт
+      parameters:
+        - $ref: '#/components/parameters/username_required'
+        - $ref: '#/components/parameters/password'
+      responses:
+        '200':
+          description: Вход успешно произведён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+        '400':
+          $ref: '#/components/responses/RequiredParameterNotSpecified'
+        '403':
+          description: Учётные данные не найдены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /account/singout:
+    post:
+      tags:
+        - account
+      summary: Выход из аккаунта
+      parameters:
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Выход успешно произведён
+        '401':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+  /account/singup:
+    post:
+      tags:
+        - account
+      summary: Регистрация аккаунта
+      parameters:
+        - $ref: '#/components/parameters/username_required'
+        - $ref: '#/components/parameters/surname_required'
+        - $ref: '#/components/parameters/name_required'
+      responses:
+        '201':
+          description: Пользователь успешно зарегистрирован
+        '400':
+          $ref: '#/components/responses/RequiredParameterNotSpecified'
+        '403':
+          description: Пользователь с таким псевдонимом уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users:
+    get:
+      tags:
+        - user
+      summary: Список пользователей
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/count_per_page'
+        - $ref: '#/components/parameters/page_number'
+        - $ref: '#/components/parameters/filter_username'
+        - $ref: '#/components/parameters/filter_surname'
+        - $ref: '#/components/parameters/filter_name'
+      responses:
+        '200':
+          description: Список пользователей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+  '/users/{userId}':
+    get:
+      tags:
+        - user
+      summary: Информация о пользователе
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Информация о пользователе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  '/users/{userId}/rooms':
+    get:
+      tags:
+        - user
+      summary: 'Информация о чат-комнатах, в которых состоит пользователь'
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: 'Список чат-комнатах, в которых состоит пользователь'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chatroom'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /users/me:
+    get:
+      tags:
+        - user
+      summary: Информация о своём аккаунте
+      parameters:
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Информация о своём аккаунте
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+    put:
+      tags:
+        - user
+      summary: Обновление информации о своём аккаунте
+      description: 'Хотя бы один из параметров `username`, `surname` или `name` должен быть указан'
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/username'
+        - $ref: '#/components/parameters/surname'
+        - $ref: '#/components/parameters/name'
+      responses:
+        '200':
+          description: Информация о текущем пользователе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+  /users/me/rooms:
+    get:
+      tags:
+        - user
+      summary: 'Информация о чат-комнатах, в которых состоит пользователь'
+      parameters:
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: 'Список чат-комнатах, в которых состоит пользователь'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chatroom'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /rooms:
+    get:
+      tags:
+        - chatroom
+      summary: Список чат-комнат
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/count_per_page'
+        - $ref: '#/components/parameters/page_number'
+        - $ref: '#/components/parameters/filter_title'
+        - $ref: '#/components/parameters/filter_private'
+        - $ref: '#/components/parameters/filter_adminId'
+      responses:
+        '200':
+          description: Список чат-комнат
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chatroom'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+    post:
+      tags:
+        - chatroom
+      summary: Создать чат-комнату
+      parameters:
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/title'
+        - $ref: '#/components/parameters/private'
+      responses:
+        '200':
+          description: Чат-комната успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chatroom'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+  '/rooms/{roomId}':
+    get:
+      tags:
+        - chatroom
+      summary: Информация о чат-комнате
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Информация о чат-комнате с указанным
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chatroom'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/InvalidTokenSpecified'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - chatroom
+      summary: Обновить чат-комнату
+      description: 'Хотя бы один из параметров `title`, `private` или `adminId` должен быть указан'
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/title'
+        - $ref: '#/components/parameters/private'
+        - $ref: '#/components/parameters/adminId'
+      responses:
+        '200':
+          description: Чат-комната успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Chatroom'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  '/rooms/{roomId}/invite/{userId}':
+    post:
+      tags:
+        - chatroom
+      summary: Пригласить пользователя в чат-комнату
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Приглашение отправлено
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - chatroom
+      summary: Удалить приглашение в чат-комнату
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Приглашение успешно удалено/отклонено
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  '/rooms/{roomId}/join':
+    post:
+      tags:
+        - chatroom
+      summary: Присоединиться к чат-комнате
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Пользователь успешно присоединился к чат-комнате
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  '/rooms/{roomId}/leave':
+    post:
+      tags:
+        - chatroom
+      summary: Покинуть чат-комнату
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Пользователь успешно покинул чат-комнату
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  '/rooms/{roomId}/kick/{userId}':
+    post:
+      tags:
+        - chatroom
+      summary: Выгнать пользователя из чат-комнаты
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Пользователь был изгнан из чат-комнаты
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  '/rooms/{roomId}/messages':
+    get:
+      tags:
+        - message
+      summary: Получить сообщения чат-комнаты
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/count_per_page'
+        - $ref: '#/components/parameters/page_number'
+        - $ref: '#/components/parameters/filter_userId'
+        - $ref: '#/components/parameters/filter_type'
+      responses:
+        '200':
+          description: Список сообщений чат-комнаты
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags:
+        - message
+      summary: Отправка сообщения в чат-комнату
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/type'
+        - $ref: '#/components/parameters/content'
+      responses:
+        '200':
+          description: Сообщение отправлено
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewMessage'
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          $ref: '#/components/responses/TooLarge'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+  '/rooms/{roomId}/messages/{messageId}':
+    put:
+      tags:
+        - message
+      summary: Изменить сообщение
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/messageId'
+        - $ref: '#/components/parameters/token'
+        - $ref: '#/components/parameters/content'
+      responses:
+        '200':
+          description: Сообщение изменено
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          $ref: '#/components/responses/TooLarge'
+    delete:
+      tags:
+        - message
+      summary: Удалить сообщение
+      parameters:
+        - $ref: '#/components/parameters/roomId'
+        - $ref: '#/components/parameters/messageId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: Сообщение удалено
+        '401':
+          $ref: '#/components/responses/TokenNotSpecified'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    AuthToken:
+      type: object
+      required:
+        - token
+        - expires
+      properties:
+        token:
+          type: string
+          description: Уникальный идентификатор сессии
+        expires:
+          type: integer
+          format: int64
+          description: Время действия токена
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Сообщение об ошибке
+    User:
+      type: object
+      required:
+        - id
+        - username
+        - surname
+        - name
+      properties:
+        id:
+          type: number
+          format: int32
+          minimum: 1
+          description: Уникальный ID пользователя
+        username:
+          type: string
+          description: Псевдоним
+        surname:
+          type: string
+          description: Фамилия
+        name:
+          type: string
+          description: Имя
+    Chatroom:
+      type: object
+      required:
+        - id
+        - title
+        - private
+        - adminId
+      properties:
+        id:
+          type: number
+          format: int32
+          minimum: 1
+          description: Уникальный ID чат-комнаты
+        title:
+          type: string
+          description: Название чат-комнаты
+        private:
+          type: boolean
+          description: Признак частной (закрытой) чат-комнаты
+        adminId:
+          type: number
+          format: int32
+          minimum: 1
+          description: ID пользователя (администратора) чат-комнаты
+    Invite:
+      type: object
+      required:
+        - id
+        - roomId
+        - fromId
+        - toId
+      properties:
+        id:
+          type: number
+          format: int32
+          minimum: 1
+          description: Уникальный ID пришлашения
+        roomId:
+          type: number
+          format: int32
+          minimum: 1
+          description: Уникальный ID чат-комнаты
+        fromId:
+          type: number
+          format: int32
+          minimum: 1
+          description: 'ID пользователя, который отправляет приглашение'
+        toId:
+          type: number
+          format: int32
+          minimum: 1
+          description: 'ID пользователя, которому отправлют приглашение'
+    Message:
+      type: object
+      required:
+        - id
+        - roomId
+        - userId
+        - type
+        - content
+        - timestamp
+        - deleted
+      properties:
+        id:
+          type: number
+          format: int32
+          minimum: 1
+          description: Уникальный ID сообщения
+        roomId:
+          type: number
+          format: int32
+          minimum: 1
+          description: ID чат-комнаты
+        userId:
+          type: number
+          format: int32
+          minimum: 1
+          description: ID пользователя (автора)
+        type:
+          type: number
+          format: int32
+          minimum: 1
+          maximum: 5
+          description: Тип сообщения
+        content:
+          type: string
+          description: 'Текст, ссылка или Base64-кодированное содержимое'
+        timestamp:
+          type: number
+          format: int32
+          minimum: 1
+          description: Метка времени
+        deleted:
+          type: boolean
+          default: false
+          description: Признак удалённого сообщения
+    NewMessage:
+      type: object
+      required:
+        - id
+        - timestamp
+      properties:
+        id:
+          type: number
+          format: int32
+          minimum: 1
+          description: Уникальный ID сообщения
+        timestamp:
+          type: number
+          format: int32
+          minimum: 1
+          description: Метка времени
+  responses:
+    TokenNotSpecified:
+      description: Не указан токен
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InvalidTokenSpecified:
+      description: Доступ запрещён. Указан недействительный токен
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Доступ запрещён
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    RequiredParameterNotSpecified:
+      description: Не указан обязательный параметр
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: 'Не найдено записей, удовлетворяющих запросу'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    TooLarge:
+      description: Запрос слишком большой
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnsupportedMediaType:
+      description: Некорректное значение поля `type`
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    token:
+      name: token
+      in: query
+      description: Уникальный идентификатор сессии
+      required: true
+      schema:
+        type: string
+    count_per_page:
+      name: count
+      in: query
+      description: Количество записей (не более 50)
+      required: false
+      schema:
+        type: number
+        format: int32
+        minimum: 1
+        maximum: 50
+        default: 10
+    page_number:
+      name: page
+      in: query
+      description: Номер страницы
+      required: false
+      schema:
+        type: number
+        format: int32
+        minimum: 1
+        default: 1
+    username:
+      name: username
+      in: query
+      description: Псевдоним
+      schema:
+        type: string
+    password:
+      name: password
+      in: query
+      description: Пароль
+      required: true
+      schema:
+        type: string
+        format: password
+    surname:
+      name: surname
+      in: query
+      description: Фамилия
+      schema:
+        type: string
+    name:
+      name: name
+      in: query
+      description: Имя
+      schema:
+        type: string
+    username_required:
+      name: username
+      in: query
+      description: Псевдоним
+      required: true
+      schema:
+        type: string
+    surname_required:
+      name: surname
+      in: query
+      description: Фамилия
+      required: true
+      schema:
+        type: string
+    name_required:
+      name: name
+      in: query
+      description: Имя
+      schema:
+        type: string
+    title:
+      name: title
+      in: query
+      description: Название чат-комнаты
+      required: false
+      schema:
+        type: string
+    private:
+      name: private
+      in: query
+      description: Признак частной (закрытой) чат-комнаты
+      required: false
+      schema:
+        type: boolean
+    adminId:
+      name: adminId
+      in: query
+      description: ID пользователя (администратора) чат-комнаты
+      required: false
+      schema:
+        type: number
+        format: int32
+        minimum: 1
+    type:
+      name: type
+      in: query
+      description: Тип сообщения
+      required: false
+      schema:
+        type: number
+        format: int32
+        minimum: 1
+    content:
+      name: content
+      in: query
+      description: 'Текст, ссылка или Base64-кодированное содержимое'
+      required: false
+      schema:
+        type: string
+    filter_userId:
+      name: userId
+      in: query
+      description: Фильтр по полю `userId`
+      required: false
+      schema:
+        type: number
+        format: int32
+        minimum: 1
+    filter_username:
+      name: username
+      in: query
+      description: Фильтр по полю `username`
+      required: false
+      schema:
+        type: string
+    filter_surname:
+      name: surname
+      in: query
+      description: Фильтр по полю `surname`
+      required: false
+      schema:
+        type: string
+    filter_name:
+      name: name
+      in: query
+      description: Фильтр по полю `name`
+      required: false
+      schema:
+        type: string
+    filter_title:
+      name: title
+      in: query
+      description: Фильтр по полю `title`
+      required: false
+      schema:
+        type: string
+    filter_private:
+      name: private
+      in: query
+      description: Фильтр по полю `private`
+      required: false
+      schema:
+        type: boolean
+    filter_adminId:
+      name: adminId
+      in: query
+      description: Фильтр по полю `adminId`
+      required: false
+      schema:
+        type: number
+        format: int32
+        minimum: 1
+    filter_type:
+      name: type
+      in: query
+      description: Фильтр по полю `type`
+      required: false
+      schema:
+        type: number
+        format: int32
+        minimum: 1
+        maximum: 5
+    userId:
+      name: userId
+      in: path
+      description: Идентификатор пользователя
+      required: true
+      schema:
+        type: number
+        format: int32
+        minimum: 1
+    roomId:
+      name: roomId
+      in: path
+      description: Идентификатор чат-комнаты
+      required: true
+      schema:
+        type: number
+        format: int32
+        minimum: 1
+    messageId:
+      name: messageId
+      in: path
+      description: Идентификатор сообщения
+      required: true
+      schema:
+        type: number
+        format: int32
+        minimum: 1
